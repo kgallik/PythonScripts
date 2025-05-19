@@ -1,5 +1,6 @@
 #useful function to plot data from a dataframe and visualize predictions
 #Snippet from ML Book Ch 3
+#set up to use with Iris dataset, modify to fit needs
 from matplotlib.colors import ListedColormap
 import matplotlib.pyplot as plt
 
