@@ -39,11 +39,11 @@ def copy_files(container, object_names, destination_folder):
         os.makedirs(destination_folder)
     
     for obj in object_names:
-      new_name = os.path.basename(obj).asString()
-      file = conn.get_object(container, obj)
+      new_name = os.path.basename(obj)
       destination_path = os.path.join(destination_folder, new_name)
-      shutil.copy(file, destination_path)
-            
+      file = conn.get_object(container, obj)[1]
+      with open(destination_path, 'wb') as f:
+          f.write(file)
             
 
 
