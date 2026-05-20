@@ -39,7 +39,8 @@ def copy_files(container, object_names, destination_folder):
         os.makedirs(destination_folder)
     
     for obj in object_names:
-      new_name = os.path.basename(obj)
+      new_name = obj.replace('04b-summed/', '')
+      new_name = new_name.replace('/', '_')
       destination_path = os.path.join(destination_folder, new_name)
       file = conn.get_object(container, obj)[1]
       with open(destination_path, 'wb') as f:
