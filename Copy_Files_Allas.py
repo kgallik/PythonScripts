@@ -18,14 +18,18 @@ _os_options = {
     'project_domain_name': os.environ['OS_USER_DOMAIN_NAME'],
     'project_name': os.environ['OS_PROJECT_NAME']
 }
+try:
+    conn = swiftclient.Connection(
+        authurl=_authurl,
+        user=_user,
+        key=_key,
+        os_options=_os_options,
+        auth_version=_auth_version
+    )
+except Exception as e:
+    print(f"Error connecting to Allas, check your credentials and read the description using the --help flag: {e}")
+    exit(1)
 
-conn = swiftclient.Connection(
-    authurl=_authurl,
-    user=_user,
-    key=_key,
-    os_options=_os_options,
-    auth_version=_auth_version
-)
 
 
 def get_random_files(container, num_files):
@@ -50,7 +54,20 @@ def copy_files(container, object_names, destination_folder):
 
 def parse_arguments():
     import argparse
-    parser = argparse.ArgumentParser(description='Copy random files from source to destination folder.')
+    parser = argparse.ArgumentParser(description=
+                                     '''
+                                     Use this script to copy random files from a source container in Allas to a local destination folder.
+                                     Requires a python environment with access to the OpenStack Swift API 
+                                     and appropriate credentials set in environment variables. 
+                                     Instructions on setting up the environment can be found here: https://docs.csc.fi/cloud/pouta/install-client/
+                                     To automatically set your Allas credentials in your environment, use the sh script provided by CSC: https://pouta.csc.fi/dashboard/project/api_access/
+                                     Additional instructions on the sh script can be found in the same docs as the python environment setup.
+                                     Note: the sh script is specific to the user and the project.
+
+                                     Example usage:
+                                     # in terminal with the active python environment and credentials:
+                                     python Copy_Files_Allas.py -sc my-source-container -df /path/to/destination/folder -nf 10
+                                     ''')
     parser.add_argument('-sc', '--source-container', type=str, help='The container to copy files from')
     parser.add_argument('-df', '--destination-folder', type=str, help='The folder to copy files to')
     parser.add_argument('-nf', '--num-files', type=int, help='The number of random files to copy')
