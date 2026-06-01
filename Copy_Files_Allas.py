@@ -33,7 +33,7 @@ except Exception as e:
 
 
 def get_random_files(container, num_files):
-    all_zip_files = [obj for obj in conn.get_container(container)[1] if obj['name'].startswith('04b-summed')]
+    all_zip_files = [obj for obj in conn.get_container(container)[1] if obj['name'].endswith('.zip')]
     random_files = random.sample(all_zip_files, num_files)
     object_names = [obj['name'] for obj in random_files]
     return object_names
@@ -43,9 +43,11 @@ def copy_files(container, object_names, destination_folder):
         os.makedirs(destination_folder)
     
     for obj in object_names:
-      new_name = obj.replace('04b-summed/', '')
-      new_name = new_name.replace('/', '_')
+      base_name = obj.split('/')[-1]
+      exp_name = obj.split('__')[0] 
+      new_name = f"{exp_name}_{base_name}"  # Get the file name from the path
       destination_path = os.path.join(destination_folder, new_name)
+      print(f"Copying {obj} to {destination_path} as {new_name}...")
       file = conn.get_object(container, obj)[1]
       with open(destination_path, 'wb') as f:
           f.write(file)
