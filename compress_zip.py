@@ -6,7 +6,8 @@ def write_zip(output_zip, dir):
     # Create a ZIP file
     with zipfile.ZipFile(output_zip, 'w', zipfile.ZIP_DEFLATED) as zipf:
         for root, _, files in os.walk(dir):
-            for file in files:
+            for file in tqdm(files):
+                print(f'Processing {len(files)}...')
                 if 'avg' in file:
                     # Create a complete file path
                     file_path = os.path.join(root, file)
